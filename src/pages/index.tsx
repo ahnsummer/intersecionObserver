@@ -1,14 +1,35 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 
 import Item, { Product } from "@/components/item";
 import { generateFakeProducts } from "@/utils/faker";
+import useIntersectionObserver from "@/hooks/useIntersectionObserver";
 
-const Home = () => {
+type IntersectHandler = (
+  /*
+  This Intersection Observer API interface describes the intersection 
+  between the target element and its root container at a specific moment of transition.
+  */
+  entry: IntersectionObserverEntry,
+  observer: IntersectionObserver
+) => void;
+
+const Home = (onIntersect: IntersectHandler) => {
   const [products, setProducts] = useState<Product[]>([]);
+  const callback = useCallback(
+    (entries: IntersectionObserverEntry[], observer: IntersectionObserver) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) onIntersect(entry, observer);
+      });
+    },
+    [onIntersect]
+  );
+
+  // const intersectionObserver = new IntersectionObserver(callback, {
+  //   threshold: 0.5,
+  // });
 
   useEffect(() => {
-    const fakeProducts = generateFakeProducts(1000);
-    setProducts(fakeProducts);
+    setProducts(generateFakeProducts(1000));
   }, []);
 
   return (

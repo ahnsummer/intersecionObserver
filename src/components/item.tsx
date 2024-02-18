@@ -8,6 +8,8 @@ export type Product = {
 };
 
 const Item = ({ name, price, description, image }: Product) => {
+  
+
   return (
     <div className="w-full h-full bg-gray-100 rounded-xl">
       <div className="w-full h-68">
